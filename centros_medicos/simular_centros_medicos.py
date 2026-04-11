@@ -47,7 +47,7 @@ def simular_centros_medicos(numeroCentros):
         numero_interseccion = random.randint(1, 200)
         direccion = f"Calle {numero_calle}{letra} #{numero_carrera}-{numero_interseccion}, {ciudad}"
         
-        # Teléfono colombiano simulado (10 dígitos)
+        # Teléfono simulado (10 dígitos)
         telefono = f"(6) {random.randint(1000000, 9999999)}"
         
         # Tipo de centro

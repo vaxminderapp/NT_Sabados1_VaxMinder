@@ -56,7 +56,7 @@ def simular_alertas(numeroAlertas):
         # Estado
         estado = random.choice(listaEstados)
         
-        # Fecha de envío (solo si no está pendiente)
+        # Fecha de envío (SOLO si no está pendiente)
         fecha_envio = None
         if estado != "pendiente":
             diasEnvio = random.randint(0, 45)
