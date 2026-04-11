@@ -29,7 +29,7 @@ def simular_usuarios(numeroUsuarios):
     cedulasUsadas = set()
     
     for _ in range(numeroUsuarios):
-        # Generar cédula única (simula cédula colombiana: 8-10 dígitos)
+        # Generar cédula única (8-10 dígitos)
         while True:
             cedula = random.randint(10000000, 99999999)
             if cedula not in cedulasUsadas:
