@@ -2,15 +2,6 @@ from datetime import datetime, timedelta
 import random 
 
 def simular_usuarios(numeroUsuarios):
-    """
-    Simula datos de usuarios para la tabla USUARIOS.
-    
-    Args:
-        numeroUsuarios (int): Cantidad de usuarios a simular
-    
-    Returns:
-        list: Lista de diccionarios con datos de usuarios simulados
-    """
     
     # Semillas de datos
     listaNombres = ["Juan", "María", "Carlos", "Ana", "Pedro", "Laura", "Miguel", "Sofía", "Diego", "Valentina", 
