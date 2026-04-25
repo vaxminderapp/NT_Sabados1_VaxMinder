@@ -1,6 +1,6 @@
 import random
 
-from simular_usuarios import simular_usuarios
+from utils.usuarios.simular_usuarios import simular_usuarios
 
 
 def transformar_usuarios(usuarios):

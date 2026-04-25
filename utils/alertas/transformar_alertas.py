@@ -1,6 +1,6 @@
 import random
 
-from simular_alertas import simular_alertas
+from utils.alertas.simular_alertas import simular_alertas
 
 
 def transformar_alertas(alertas):
