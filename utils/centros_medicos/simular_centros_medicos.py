@@ -2,15 +2,6 @@ from datetime import datetime, timedelta
 import random 
 
 def simular_centros_medicos(numeroCentros):
-    """
-    Simula datos de centros médicos para la tabla CENTROS_MEDICOS.
-    
-    Args:
-        numeroCentros (int): Cantidad de centros médicos a simular
-    
-    Returns:
-        list: Lista de diccionarios con datos de centros médicos simulados
-    """
     
     # Semillas de datos
     listaNombresCentros = [

@@ -8,7 +8,7 @@ from utils.registroVacunacion.simular_registro_vacunacion import simularRegistro
 from utils.usuarios.simular_usuarios import simular_usuarios
 from utils.vacunasCatalogo.simular_vacunas_catalogo import simular_vacunas_catalogo
 
-# TRANSFORMAR (inyectar errores)
+# TRANSFORMAR
 from utils.alertas.transformar_alertas import transformar_alertas
 from utils.centros_medicos.transformar_centros_medicos import transformar_centros_medicos
 from utils.historialPdf.transformar_historialpdf import transformar_historial
@@ -21,9 +21,4 @@ from utils.alertas.limpiar_alertas import limpiar_alertas
 from utils.centros_medicos.limpiar_centros_medicos import limpiar_centros_medicos
 from notebook.limpiar_historialPdf import limpiar_historial
 from utils.usuarios.limpiar_usuarios import limpiar_usuarios
-from notebook.limpiar_vacunas_catalogo import limpiar_vacunas_catalogo
-
-# DESCRIBIR (transformación con query())
-from utils.alertas.describir_alertas import describir_alertas
-from utils.centros_medicos.describir_centros_medicos import describir_centros_medicos
-from utils.usuarios.describir_usuarios import describir_usuarios        
+from notebook.limpiar_vacunas_catalogo import limpiar_vacunas_catalogo        
