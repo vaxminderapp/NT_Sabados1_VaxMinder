@@ -1,12 +1,29 @@
 import pandas as pd
+
+# SIMULAR
 from utils.alertas.simular_alertas import simular_alertas     
 from utils.centros_medicos.simular_centros_medicos import simular_centros_medicos
 from utils.historialPdf.simular_historial import simular_historial
 from utils.registroVacunacion.simular_registro_vacunacion import simularRegistroVacunacion
 from utils.usuarios.simular_usuarios import simular_usuarios
 from utils.vacunasCatalogo.simular_vacunas_catalogo import simular_vacunas_catalogo
-from notebook.limpiar_alertas import limpiar_alertas
-from notebook.limpiar_centros_medicos import limpiar_centros_medicos
+
+# TRANSFORMAR (inyectar errores)
+from utils.alertas.transformar_alertas import transformar_alertas
+from utils.centros_medicos.transformar_centros_medicos import transformar_centros_medicos
+from utils.historialPdf.transformar_historialpdf import transformar_historial
+from utils.registroVacunacion.transformar_registro_vacunacion import transformar_registro_vacunacion
+from utils.usuarios.transformar_usuarios import transformar_usuarios
+from utils.vacunasCatalogo.transformar_vacunas_catalogo import transformar_vacunas_catalogo
+
+# LIMPIAR
+from utils.alertas.limpiar_alertas import limpiar_alertas
+from utils.centros_medicos.limpiar_centros_medicos import limpiar_centros_medicos
 from notebook.limpiar_historialPdf import limpiar_historial
-from notebook.limpiar_usuarios import limpiar_usuarios
-from notebook.limpiar_vacunas_catalogo import limpiar_vacunas_catalogo        
+from utils.usuarios.limpiar_usuarios import limpiar_usuarios
+from notebook.limpiar_vacunas_catalogo import limpiar_vacunas_catalogo
+
+# DESCRIBIR (transformación con query())
+from utils.alertas.describir_alertas import describir_alertas
+from utils.centros_medicos.describir_centros_medicos import describir_centros_medicos
+from utils.usuarios.describir_usuarios import describir_usuarios        
