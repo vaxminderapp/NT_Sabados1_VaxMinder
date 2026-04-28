@@ -1,6 +1,6 @@
 import random
 
-from simular_centros_medicos import simular_centros_medicos
+from utils.centros_medicos.simular_centros_medicos import simular_centros_medicos
 
 
 def transformar_centros_medicos(centros):

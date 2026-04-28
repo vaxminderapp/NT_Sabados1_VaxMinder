@@ -2,15 +2,6 @@ from datetime import datetime, timedelta
 import random 
 
 def simular_alertas(numeroAlertas):
-    """
-    Simula datos de alertas para la tabla ALERTAS.
-    
-    Args:
-        numeroAlertas (int): Cantidad de alertas a simular
-    
-    Returns:
-        list: Lista de diccionarios con datos de alertas simulados
-    """
     
     # Semillas de datos
     listasTiposAlerta = ["refuerzo", "recordatorio", "vencimiento"]
