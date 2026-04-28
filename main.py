@@ -1,194 +1,65 @@
 import pandas as pd
 
-# SIMULAR
-from utils.alertas.simular_alertas import simular_alertas     
+# Zona para importar simulaciones
+from utils.alertas.simular_alertas import simular_alertas
 from utils.centros_medicos.simular_centros_medicos import simular_centros_medicos
+from utils.historialPdf.simular_historial import simularHistorialPdf
+from utils.registroVacunacion.simular_registro_vacunacion import simularRegistroVacunacion
 from utils.usuarios.simular_usuarios import simular_usuarios
+from utils.vacunasCatalogo.simular_vacunas_catalogo import simular_vacunas_catalogo
 
-# TRANSFORMAR
-from utils.alertas.transformar_alertas import transformar_alertas
-from utils.centros_medicos.transformar_centros_medicos import transformar_centros_medicos
-from utils.usuarios.transformar_usuarios import transformar_usuarios
+# Zona para importar limpiezas
 
-# LIMPIAR
-from utils.alertas.limpiar_alertas import limpiar_alertas
-from utils.centros_medicos.limpiar_centros_medicos import limpiar_centros_medicos
-from utils.usuarios.limpiar_usuarios import limpiar_usuarios
-
-
-def mostrar_menu_principal():
-    """Muestra el menú principal de opciones"""
-    print("\n" + "="*60)
-    print("       VAXMINDER - SISTEMA DE GESTIÓN DE VACUNACIÓN")
-    print("="*60)
-    print("\nOpciones principales:")
-    print("1. Simular datos")
-    print("2. Transformar datos")
-    print("3. Limpiar datos")
-    print("4. Salir")
-    print("-"*60)
-    return input("Selecciona una opción (1-4): ").strip()
+from notebook.limpiar_alertas import limpiar_alertas
+from notebook.limpiar_centros_medicos import limpiar_centros_medicos
+from notebook.limpiar_historialPdf import limpiar_historial
+from notebook.limpiar_registro_vacunacion import limpiar_registro_vacunacion
+from notebook.limpiar_usuarios import limpiar_usuarios
+from notebook.limpiar_vacunas_catalogo import limpiar_vacunas_catalogo
 
 
-def mostrar_menu_modulos():
-    """Muestra el menú para seleccionar módulo"""
-    print("\nMódulos disponibles:")
-    print("1. Alertas")
-    print("2. Centros Médicos")
-    print("3. Usuarios")
-    print("-"*60)
-    return input("Selecciona un módulo (1-3): ").strip()
+# Zona para importar descripciones
+
+from notebook.describir_alertas import describir_alertas
+from notebook.describir_centros_medicos import describir_centros_medicos
+from notebook.describir_historialPdf import describir_historial
+from notebook.describir_registro_vacunacion import describir_registro_vacunacion
+from notebook.describir_usuarios import describir_usuarios
+from notebook.describir_vacunas_catalogo import describir_vacunas_catalogo
 
 
-def simular():
-    """Ejecuta la opción de simular datos"""
-    print("\n--- SIMULAR DATOS ---")
-    modulo = mostrar_menu_modulos()
-    
-    try:
-        if modulo == "1":
-            cantidad = int(input("¿Cuántas alertas deseas simular? "))
-            datos = simular_alertas(cantidad)
-            df = pd.DataFrame(datos) if isinstance(datos, list) else datos
-            print(f"✓ Se simularon {cantidad} alertas")
-            print(f"Primeras filas:\n{df.head()}")
-            guardar = input("\n¿Deseas guardar los datos? (s/n): ").lower()
-            if guardar == 's':
-                df.to_csv("alertas_simuladas.csv", index=False)
-                print("✓ Archivo guardado como 'alertas_simuladas.csv'")
-                
-        elif modulo == "2":
-            cantidad = int(input("¿Cuántos centros médicos deseas simular? "))
-            datos = simular_centros_medicos(cantidad)
-            df = pd.DataFrame(datos) if isinstance(datos, list) else datos
-            print(f"✓ Se simularon {cantidad} centros médicos")
-            print(f"Primeras filas:\n{df.head()}")
-            guardar = input("\n¿Deseas guardar los datos? (s/n): ").lower()
-            if guardar == 's':
-                df.to_csv("centros_medicos_simulados.csv", index=False)
-                print("✓ Archivo guardado como 'centros_medicos_simulados.csv'")
-                
-        elif modulo == "3":
-            cantidad = int(input("¿Cuántos usuarios deseas simular? "))
-            datos = simular_usuarios(cantidad)
-            df = pd.DataFrame(datos) if isinstance(datos, list) else datos
-            print(f"✓ Se simularon {cantidad} usuarios")
-            print(f"Primeras filas:\n{df.head()}")
-            guardar = input("\n¿Deseas guardar los datos? (s/n): ").lower()
-            if guardar == 's':
-                df.to_csv("usuarios_simulados.csv", index=False)
-                print("✓ Archivo guardado como 'usuarios_simulados.csv'")
-        else:
-            print("❌ Opción inválida")
-    except ValueError:
-        print("❌ Error: Debes ingresar un número válido")
-    except Exception as e:
-        print(f"❌ Error durante la simulación: {e}")
+# Creando las simulaciones
+
+alertas_sim          = pd.DataFrame(simular_alertas(10))
+centros_medicos_sim  = pd.DataFrame(simular_centros_medicos(10))
+usuarios_sim         = pd.DataFrame(simular_usuarios(10))
+vacunas_catalogo_sim = pd.DataFrame(simular_vacunas_catalogo())
+
+ids_usuarios  = usuarios_sim["id_usuario"].tolist()
+ids_centros   = centros_medicos_sim["id_centro"].tolist()
+vacunas_lista = vacunas_catalogo_sim.to_dict("records")
+
+historial_sim           = pd.DataFrame(simularHistorialPdf(10, ids_usuarios))
+registro_vacunacion_sim = pd.DataFrame(
+    simularRegistroVacunacion(10, ids_usuarios, vacunas_lista, ids_centros)
+)
 
 
-def transformar():
-    """Ejecuta la opción de transformar datos"""
-    print("\n--- TRANSFORMAR DATOS ---")
-    modulo = mostrar_menu_modulos()
-    
-    try:
-        archivo = input("Ingresa la ruta del archivo CSV a transformar: ").strip()
-        df = pd.read_csv(archivo)
-        
-        if modulo == "1":
-            datos = transformar_alertas(df.to_dict('records'))
-            df_transformado = pd.DataFrame(datos) if isinstance(datos, list) else datos
-            print(f"✓ Se transformaron {len(df_transformado)} registros de alertas")
-            print(f"Primeras filas:\n{df_transformado.head()}")
-            guardar = input("\n¿Deseas guardar los datos transformados? (s/n): ").lower()
-            if guardar == 's':
-                df_transformado.to_csv("alertas_transformadas.csv", index=False)
-                print("✓ Archivo guardado como 'alertas_transformadas.csv'")
-                
-        elif modulo == "2":
-            datos = transformar_centros_medicos(df.to_dict('records'))
-            df_transformado = pd.DataFrame(datos) if isinstance(datos, list) else datos
-            print(f"✓ Se transformaron {len(df_transformado)} registros de centros médicos")
-            print(f"Primeras filas:\n{df_transformado.head()}")
-            guardar = input("\n¿Deseas guardar los datos transformados? (s/n): ").lower()
-            if guardar == 's':
-                df_transformado.to_csv("centros_medicos_transformados.csv", index=False)
-                print("✓ Archivo guardado como 'centros_medicos_transformados.csv'")
-                
-        elif modulo == "3":
-            datos = transformar_usuarios(df.to_dict('records'))
-            df_transformado = pd.DataFrame(datos) if isinstance(datos, list) else datos
-            print(f"✓ Se transformaron {len(df_transformado)} registros de usuarios")
-            print(f"Primeras filas:\n{df_transformado.head()}")
-            guardar = input("\n¿Deseas guardar los datos transformados? (s/n): ").lower()
-            if guardar == 's':
-                df_transformado.to_csv("usuarios_transformados.csv", index=False)
-                print("✓ Archivo guardado como 'usuarios_transformados.csv'")
-        else:
-            print("❌ Opción inválida")
-    except FileNotFoundError:
-        print("❌ Error: Archivo no encontrado")
-    except Exception as e:
-        print(f"❌ Error durante la transformación: {e}")
+# Limpiando los sets de datos
+
+alertas_limpias            = limpiar_alertas(alertas_sim)
+centros_medicos_limpios    = limpiar_centros_medicos(centros_medicos_sim)
+historial_limpio           = limpiar_historial(historial_sim)
+registro_vacunacion_limpio = limpiar_registro_vacunacion(registro_vacunacion_sim)
+usuarios_limpios           = limpiar_usuarios(usuarios_sim)
+vacunas_catalogo_limpias   = limpiar_vacunas_catalogo(vacunas_catalogo_sim)
 
 
-def limpiar():
-    """Ejecuta la opción de limpiar datos"""
-    print("\n--- LIMPIAR DATOS ---")
-    modulo = mostrar_menu_modulos()
-    
-    try:
-        archivo = input("Ingresa la ruta del archivo CSV a limpiar: ").strip()
-        df = pd.read_csv(archivo)
-        
-        if modulo == "1":
-            df_limpio = limpiar_alertas(df)
-            print(f"✓ Se limpiaron {len(df_limpio)} registros de alertas")
-            guardar = input("\n¿Deseas guardar los datos limpios? (s/n): ").lower()
-            if guardar == 's':
-                df_limpio.to_csv("alertas_limpias.csv", index=False)
-                print("✓ Archivo guardado como 'alertas_limpias.csv'")
-                
-        elif modulo == "2":
-            df_limpio = limpiar_centros_medicos(df)
-            print(f"✓ Se limpiaron {len(df_limpio)} registros de centros médicos")
-            guardar = input("\n¿Deseas guardar los datos limpios? (s/n): ").lower()
-            if guardar == 's':
-                df_limpio.to_csv("centros_medicos_limpios.csv", index=False)
-                print("✓ Archivo guardado como 'centros_medicos_limpios.csv'")
-                
-        elif modulo == "3":
-            df_limpio = limpiar_usuarios(df)
-            print(f"✓ Se limpiaron {len(df_limpio)} registros de usuarios")
-            guardar = input("\n¿Deseas guardar los datos limpios? (s/n): ").lower()
-            if guardar == 's':
-                df_limpio.to_csv("usuarios_limpios.csv", index=False)
-                print("✓ Archivo guardado como 'usuarios_limpios.csv'")
-        else:
-            print("❌ Opción inválida")
-    except FileNotFoundError:
-        print("❌ Error: Archivo no encontrado")
-    except Exception as e:
-        print(f"❌ Error durante la limpieza: {e}")
+# Describiendo los sets de datos
 
-
-def main():
-    """Función principal - Menú interactivo"""
-    while True:
-        opcion = mostrar_menu_principal()
-        
-        if opcion == "1":
-            simular()
-        elif opcion == "2":
-            transformar()
-        elif opcion == "3":
-            limpiar()
-        elif opcion == "4":
-            print("\n¡Hasta luego!")
-            break
-        else:
-            print("❌ Opción inválida. Intenta de nuevo.")
-
-
-if __name__ == "__main__":
-    main()        
+describir_alertas(alertas_limpias)
+describir_centros_medicos(centros_medicos_limpios)
+describir_historial(historial_limpio)
+describir_registro_vacunacion(registro_vacunacion_limpio)
+describir_usuarios(usuarios_limpios)
+describir_vacunas_catalogo(vacunas_catalogo_limpias)
