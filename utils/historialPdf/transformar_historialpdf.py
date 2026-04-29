@@ -1,5 +1,5 @@
 import random
-from simular_historial import simularHistorialPdf
+from utils.historialPdf.simular_historial import simularHistorialPdf
 
 
 def transformar_historial(historial):
