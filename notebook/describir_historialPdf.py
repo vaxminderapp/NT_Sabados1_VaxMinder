@@ -3,15 +3,28 @@ import pandas as pd
 
 def describir_historial(df: pd.DataFrame) -> None:
     print("\n========== DESCRIPCIÓN: HISTORIAL PDF ==========")
-    print(f"Número de filas:      {df.shape[0]}")
-    print(f"Número de columnas:   {df.shape[1]}")
-    print(f"Columnas disponibles: {list(df.columns)}")
+    print(f"Total de documentos generados: {df.shape[0]}")
 
-    stats = df[['idHistorial', 'idUsuario']].describe()
-    stats['idHistorial'] = stats['idHistorial'].apply(lambda x: f"{int(x)}")
-    stats['idUsuario']   = stats['idUsuario'].apply(lambda x: f"{int(x)}")
-    print(f"\nEstadísticas numéricas:\n{stats}")
+    print("\n--- Listado de documentos ---")
+    print(f"  {'ID':>4}  {'ID Usuario':>12}  {'Fecha Generación':<20}  {'Archivo'}")
+    print(f"  {'--':>4}  {'----------':>12}  {'----------------':<20}  {'-------'}")
+    for _, fila in df.iterrows():
+        print(f"  {int(fila['idHistorial']):>4}  {int(fila['idUsuario']):>12}  {str(fila['fechaGeneracion']):<20}  {fila['nombreArchivo']}")
 
-    print(f"\nFecha mínima de generación: {df['fechaGeneracion'].min()}")
-    print(f"Fecha máxima de generación: {df['fechaGeneracion'].max()}")
-    print(f"\nValores nulos por columna:\n{df.isnull().sum().to_string()}")
+    print(f"\n--- Período de generación ---")
+    print(f"  Documento más antiguo: {df['fechaGeneracion'].min()}")
+    print(f"  Documento más reciente: {df['fechaGeneracion'].max()}")
+
+    docs_por_usuario = df.groupby('idUsuario').size()
+    print(f"\n--- Documentos por usuario ---")
+    for id_usuario, cantidad in docs_por_usuario.items():
+        print(f"  Usuario {int(id_usuario)}: {cantidad} documento(s)")
+
+    nulos = df.isnull().sum()
+    nulos = nulos[nulos > 0]
+    if not nulos.empty:
+        print(f"\n--- Campos con datos faltantes ---")
+        for campo, cantidad in nulos.items():
+            print(f"  {campo}: {cantidad} registros sin dato")
+    else:
+        print("\n  Sin campos con datos faltantes.")

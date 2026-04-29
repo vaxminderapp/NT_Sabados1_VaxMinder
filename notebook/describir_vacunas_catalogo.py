@@ -2,17 +2,22 @@ import pandas as pd
 
 
 def describir_vacunas_catalogo(df: pd.DataFrame) -> None:
-    print("\n========== DESCRIPCIÓN: VACUNAS CATÁLOGO ==========")
-    print(f"Número de filas:      {df.shape[0]}")
-    print(f"Número de columnas:   {df.shape[1]}")
-    print(f"Columnas disponibles: {list(df.columns)}")
+    print("\n========== DESCRIPCIÓN: CATÁLOGO DE VACUNAS ==========")
+    print(f"Total de vacunas en el catálogo: {df.shape[0]}")
 
-    stats = df[['id_vacuna', 'dosis_requeridas', 'intervalo_dosis_dias']].describe()
-    stats['id_vacuna']           = stats['id_vacuna'].apply(lambda x: f"{int(x)}")
-    stats['dosis_requeridas']    = stats['dosis_requeridas'].apply(lambda x: f"{int(round(x))}")
-    stats['intervalo_dosis_dias']= stats['intervalo_dosis_dias'].apply(lambda x: f"{int(round(x))}")
-    print(f"\nEstadísticas numéricas:\n{stats}")
+    print("\n--- Listado completo de vacunas ---")
+    print(f"  {'ID':>3}  {'Nombre':<20}  {'Dosis':<6}  {'Refuerzo':<9}  {'Descripción'}")
+    print(f"  {'--':>3}  {'------':<20}  {'-----':<6}  {'--------':<9}  {'-----------'}")
+    for _, fila in df.iterrows():
+        refuerzo = "Sí" if fila['requiere_refuerzo'] else "No"
+        print(f"  {int(fila['id_vacuna']):>3}  {fila['nombre_vacuna']:<20}  {int(fila['dosis_requeridas']):<6}  {refuerzo:<9}  {fila['descripcion']}")
 
-    print(f"\nVacunas que requieren refuerzo:\n{df['requiere_refuerzo'].value_counts()}")
-    print(f"\nDistribución por dosis requeridas:\n{df['dosis_requeridas'].value_counts().sort_index()}")
-    print(f"\nValores nulos por columna:\n{df.isnull().sum().to_string()}")
+    con_refuerzo = df['requiere_refuerzo'].sum()
+    sin_refuerzo = len(df) - con_refuerzo
+    print(f"\n--- Vacunas que requieren refuerzo ---")
+    print(f"  Requieren refuerzo  : {con_refuerzo}")
+    print(f"  No requieren refuerzo: {sin_refuerzo}")
+
+    print(f"\n--- Distribución por número de dosis ---")
+    for dosis, cantidad in df['dosis_requeridas'].value_counts().sort_index().items():
+        print(f"  {dosis} dosis: {cantidad} vacuna(s)")

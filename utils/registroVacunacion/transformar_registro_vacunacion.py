@@ -1,5 +1,5 @@
 import random
-from simular_registro_vacunacion import simularRegistroVacunacion
+from utils.registroVacunacion.simular_registro_vacunacion import simularRegistroVacunacion
 
 
 def transformar_registro_vacunacion(registros):

@@ -52,6 +52,19 @@ ids_usuarios  = usuarios_limpios["id_usuario"].tolist()
 ids_centros   = centros_medicos_limpios["id_centro"].tolist()
 vacunas_lista = vacunas_catalogo_limpias.to_dict("records")
 
+# Guardia: si no hay usuarios o centros limpios, no se puede simular historial/registros
+if not ids_usuarios:
+    print("\n[AVISO] No quedaron usuarios limpios. Generando usuarios de respaldo para continuar...")
+    from utils.usuarios.simular_usuarios import simular_usuarios
+    usuarios_respaldo = simular_usuarios(10)
+    ids_usuarios = [u["id_usuario"] for u in usuarios_respaldo]
+
+if not ids_centros:
+    print("\n[AVISO] No quedaron centros médicos limpios. Generando centros de respaldo para continuar...")
+    from utils.centros_medicos.simular_centros_medicos import simular_centros_medicos
+    centros_respaldo = simular_centros_medicos(5)
+    ids_centros = [c["id_centro"] for c in centros_respaldo]
+
 historial_sim           = pd.DataFrame(simularHistorialPdf(10, ids_usuarios))
 registro_vacunacion_sim = pd.DataFrame(
     simularRegistroVacunacion(10, ids_usuarios, vacunas_lista, ids_centros)
