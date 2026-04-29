@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 
 from utils.alertas.simular_alertas import simular_alertas
 
@@ -38,6 +39,22 @@ def transformar_alertas(alertas):
         alertas_transformadas.append(alerta_transformada)
 
     return alertas_transformadas
+
+
+def consultar_alertas(df: pd.DataFrame) -> None:
+    print("\n========== CONSULTAS: ALERTAS ==========")
+
+    pendientes = df.query("estado == 'pendiente'")
+    print(f"\n[1] Alertas pendientes de envío ({len(pendientes)} registros):")
+    print(pendientes[['id_alerta', 'tipo_alerta', 'estado', 'fecha_alerta']].to_string())
+
+    criticas = df.query("tipo_alerta in ['refuerzo', 'vencimiento']")
+    print(f"\n[2] Alertas críticas - refuerzo o vencimiento ({len(criticas)} registros):")
+    print(criticas[['id_alerta', 'tipo_alerta', 'estado']].to_string())
+
+    gestionadas = df.query("estado == 'enviada' or estado == 'leida'")
+    print(f"\n[3] Alertas gestionadas - enviadas o leídas ({len(gestionadas)} registros):")
+    print(gestionadas[['id_alerta', 'tipo_alerta', 'estado', 'fecha_envio']].to_string())
 
 
 if __name__ == "__main__":

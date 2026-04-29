@@ -37,5 +37,12 @@ def limpiar_alertas(alertas):
         
         validas.append(fila)
     
+    print(f"--- Resumen limpieza alertas ---")
+    print(f"Registros originales:  {antes}")
+    print(f"Registros eliminados:  {antes - len(validas)}")
+    print(f"Registros válidos:     {len(validas)}\n")
+
+    if not validas:
+        return df.iloc[0:0].reset_index(drop=True)
     df_limpio = pd.DataFrame(validas).reset_index(drop=True)
     return df_limpio

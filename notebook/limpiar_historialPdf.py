@@ -1,3 +1,9 @@
-from utils.alertas.limpiar_alertas import limpiar_alertas as _base
+import pandas as pd
+
+
 def limpiar_historial(datos):
-    return _base(datos)
+    if isinstance(datos, list):
+        df = pd.DataFrame(datos)
+    else:
+        df = datos.copy()
+    return df.reset_index(drop=True)

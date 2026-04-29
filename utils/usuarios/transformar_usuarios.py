@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 
 from utils.usuarios.simular_usuarios import simular_usuarios
 
@@ -37,6 +38,22 @@ def transformar_usuarios(usuarios):
         usuarios_transformados.append(usuario_transformado)
 
     return usuarios_transformados
+
+
+def consultar_usuarios(df: pd.DataFrame) -> None:
+    print("\n========== CONSULTAS: USUARIOS ==========")
+
+    tipo_o = df.query("tipo_sangre in ['O+', 'O-']")
+    print(f"\n[1] Usuarios con sangre tipo O - donantes universales ({len(tipo_o)} registros):")
+    print(tipo_o[['id_usuario', 'nombre', 'apellido', 'tipo_sangre']].to_string())
+
+    mayores = df.query("fecha_nacimiento < '1990-01-01'")
+    print(f"\n[2] Usuarios nacidos antes de 1990 ({len(mayores)} registros):")
+    print(mayores[['id_usuario', 'nombre', 'apellido', 'fecha_nacimiento']].to_string())
+
+    id_alto = df.query("id_usuario > 50000000")
+    print(f"\n[3] Usuarios con cédula mayor a 50,000,000 ({len(id_alto)} registros):")
+    print(id_alto[['id_usuario', 'nombre', 'apellido']].to_string())
 
 
 if __name__ == "__main__":
