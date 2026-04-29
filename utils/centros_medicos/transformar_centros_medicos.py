@@ -1,4 +1,5 @@
 import random
+import pandas as pd
 
 from utils.centros_medicos.simular_centros_medicos import simular_centros_medicos
 
@@ -38,6 +39,22 @@ def transformar_centros_medicos(centros):
         centros_transformados.append(centro_transformado)
 
     return centros_transformados
+
+
+def consultar_centros_medicos(df: pd.DataFrame) -> None:
+    print("\n========== CONSULTAS: CENTROS MÉDICOS ==========")
+
+    hospitales = df.query("tipo_centro == 'Hospital'")
+    print(f"\n[1] Solo hospitales ({len(hospitales)} registros):")
+    print(hospitales[['id_centro', 'nombre_centro', 'ciudad', 'tipo_centro']].to_string())
+
+    no_hospitales = df.query("tipo_centro != 'Hospital'")
+    print(f"\n[2] Clínicas y centros de salud ({len(no_hospitales)} registros):")
+    print(no_hospitales[['id_centro', 'nombre_centro', 'ciudad', 'tipo_centro']].to_string())
+
+    primeros = df.query("id_centro <= 15")
+    print(f"\n[3] Centros con ID menor o igual a 15 ({len(primeros)} registros):")
+    print(primeros[['id_centro', 'nombre_centro', 'tipo_centro']].to_string())
 
 
 if __name__ == "__main__":

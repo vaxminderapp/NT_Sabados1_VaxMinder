@@ -61,5 +61,12 @@ def limpiar_usuarios(usuarios):
         
         validos.append(fila)
     
+    print(f"--- Resumen limpieza usuarios ---")
+    print(f"Registros originales:  {antes}")
+    print(f"Registros eliminados:  {antes - len(validos)}")
+    print(f"Registros válidos:     {len(validos)}\n")
+
+    if not validos:
+        return df.iloc[0:0].reset_index(drop=True)
     df_limpio = pd.DataFrame(validos).reset_index(drop=True)
     return df_limpio
