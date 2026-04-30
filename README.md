@@ -2,7 +2,7 @@
 
 Proyecto integrador de nuevas tecnologías para simular, transformar y limpiar datos de vacunación.
 
-Mejia Ochoa Elizabeth 
+Mejia Ochoa Elizabeth -
 Mestra Perez Ana Maria 
 
 ## Requisitos
