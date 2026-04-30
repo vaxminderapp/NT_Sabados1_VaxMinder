@@ -32,6 +32,3 @@ python main.py
 - `requirements.txt` - dependencias necesarias
 - `.gitignore` - excluye el entorno virtual `env/`
 
-## Notas
-
-Este repositorio ya excluye el entorno virtual local, por lo que solo debes subir el código fuente y `requirements.txt` a GitHub.
