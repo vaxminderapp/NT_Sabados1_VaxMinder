@@ -21,8 +21,6 @@ python -m pip install --upgrade pip
 python -m pip install -r requirements.txt
 ```
 
-> Si usas `bash` o `zsh` en Windows con WSL, reemplaza `env\Scripts\Activate.ps1` por `source env/bin/activate`.
-
 ## Ejecución
 
 ```powershell
