@@ -27,6 +27,11 @@ def describir_alertas(df: pd.DataFrame) -> None:
     print(f"  Alerta más antigua : {df['fecha_alerta'].min()}")
     print(f"  Alerta más reciente: {df['fecha_alerta'].max()}")
 
+    print(f"\nDistribución por tipo de alerta:\n{df['tipo_alerta'].value_counts().sort_index()}")
+    print(f"\nDistribución por estado:\n{df['estado'].value_counts().sort_index()}")
+    print(f"\nFecha mínima de alerta: {df['fecha_alerta'].min()}")
+    print(f"Fecha máxima de alerta: {df['fecha_alerta'].max()}")
+    print(f"\nValores nulos por columna:\n{df.isnull().sum().to_string()}")
     nulos = df.isnull().sum()
     nulos = nulos[nulos > 0]
     if not nulos.empty:
