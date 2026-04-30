@@ -2,6 +2,9 @@
 
 Proyecto integrador de nuevas tecnologías para simular, transformar y limpiar datos de vacunación.
 
+Mejia Ochoa Elizabeth 
+Mestra Perez Ana Maria 
+
 ## Requisitos
 
 - Python 3.11 o superior
