@@ -17,19 +17,11 @@ def describir_usuarios(df: pd.DataFrame) -> None:
         print(f"  {int(fila['id_usuario']):>12}  {nombre_completo:<25}  {fila['tipo_sangre']:<12}  {fila['fecha_nacimiento']:<12}")
 
     print(f"\n--- Período de registro ---")
-    print(f"  Primer registro : {df['fecha_registro'].min()}")
-    print(f"  Último registro : {df['fecha_registro'].max()}")
+    fecha_min = str(df['fecha_registro'].min()).replace(' 00:00:00','')
+    print(f"  Primer registro : {fecha_min if pd.notna(fecha_min) else '(sin dato)'}")
+    fecha_max = str(df['fecha_registro'].max()).replace(' 00:00:00','')
+    print(f"  Último registro : {fecha_max if pd.notna(fecha_max) else '(sin dato)'}")
 
-    stats = df[['id_usuario']].describe()
-    stats['id_usuario'] = stats['id_usuario'].apply(lambda x: f"{int(x)}" if pd.notna(x) else "-")
-    print(f"\nEstadísticas numéricas:\n{stats}")
-
-    print(f"\nDistribución por tipo de sangre:\n{df['tipo_sangre'].value_counts().sort_index()}")
-    print(f"\nFecha mínima de nacimiento: {df['fecha_nacimiento'].min()}")
-    print(f"Fecha máxima de nacimiento: {df['fecha_nacimiento'].max()}")
-    print(f"\nFecha mínima de registro: {df['fecha_registro'].min()}")
-    print(f"Fecha máxima de registro: {df['fecha_registro'].max()}")
-    print(f"\nValores nulos por columna:\n{df.isnull().sum().to_string()}")
     nulos = df.isnull().sum()
     nulos = nulos[nulos > 0]
     if not nulos.empty:
@@ -38,4 +30,3 @@ def describir_usuarios(df: pd.DataFrame) -> None:
             print(f"  {campo}: {cantidad} registros sin dato")
     else:
         print("\n  Sin campos con datos faltantes.")
-

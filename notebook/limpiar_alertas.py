@@ -1,74 +1,56 @@
 import pandas as pd
 
 
-def limpiar_alertas(alertas):
-    if isinstance(alertas, list):
-        df = pd.DataFrame(alertas)
-    else:
-        df = alertas.copy()
-    
-    print("Valores nulos:")
-    for col in df.columns:
-        nulos = df[col].isna().sum()
-        if nulos > 0:
-            print(f"  {col}: {nulos}")
-    
-    antes = len(df)
-    df = df.drop_duplicates(subset=['id_alerta'], keep='first')
-    print(f"Duplicados: {antes - len(df)}\n")
-    
-    validas = []
-    for _, fila in df.iterrows():
-        if pd.isna(fila['id_alerta']) or fila['id_alerta'] <= 0:
-            continue
-        if pd.isna(fila['id_usuario']) or fila['id_usuario'] <= 0:
-            continue
-        if fila['tipo_alerta'] not in ["refuerzo", "recordatorio", "vencimiento"]:
-            continue
-        if fila['estado'] not in ["pendiente", "enviada", "leida", "descartada"]:
-            continue
-        if pd.isna(fila['mensaje']) or str(fila['mensaje']).strip() == "":
-            continue
-        if pd.isna(fila['fecha_alerta']):
-            continue
-        
-        # Si estado es pendiente, fecha_envio debe ser nula; de lo contrario debe tener valor
-        if fila['estado'] == 'pendiente':
-            if pd.isna(fila['fecha_envio']):
-                # Es válido: alerta pendiente sin fecha de envío
-                pass
-            else:
-                # Alerta pendiente pero con fecha de envío es inconsistente, rechazar
-                continue
-        else:
-            # Estado no es pendiente, debe tener fecha_envio válida
-            if pd.isna(fila['fecha_envio']):
-                continue
-        
-        # Convertir fila a diccionario para evitar problemas con Series
-        registro = fila.to_dict()
-        validas.append(registro)
-    
-<<<<<<< HEAD
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> 41b6f2d (fix Cambios en main)
-    print(f"--- Resumen limpieza alertas ---")
-    print(f"Registros originales:  {antes}")
-    print(f"Registros eliminados:  {antes - len(validas)}")
-    print(f"Registros válidos:     {len(validas)}\n")
+def limpiar_alertas(datos):
+    df = pd.DataFrame(datos) if isinstance(datos, list) else datos.copy()
 
-    if not validas:
-        return df.iloc[0:0].reset_index(drop=True)
-<<<<<<< HEAD
-=======
-    
->>>>>>> Stashed changes
->>>>>>> 41b6f2d (fix Cambios en main)
-    df_limpio = pd.DataFrame(validas).reset_index(drop=True)
-    
-    # Eliminar cualquier fila que contenga NaN
-    df_limpio = df_limpio.dropna()
-    
-    return df_limpio
+    print("Nulos detectados:")
+    nulos_total = 0
+    for col in df.columns:
+        n = df[col].isna().sum()
+        if n > 0:
+            print(f"  {col}: {n}")
+            nulos_total += n
+    if nulos_total == 0:
+        print("  (ninguno)")
+
+    antes = len(df)
+    df = df.drop_duplicates(subset=["id_alerta"], keep="first")
+
+    tipos_validos   = ["refuerzo", "recordatorio", "vencimiento"]
+    estados_validos = ["pendiente", "enviada", "leida", "descartada"]
+
+    filas = []
+    for _, f in df.iterrows():
+        f = f.copy()
+
+        if pd.isna(f["id_alerta"]) or int(f["id_alerta"]) <= 0:
+            continue
+        if pd.isna(f["id_usuario"]) or int(f["id_usuario"]) <= 0:
+            continue
+        if pd.isna(f["id_registro"]) or int(f["id_registro"]) <= 0:
+            continue
+        if f["tipo_alerta"] not in tipos_validos:
+            continue
+        if f["estado"] not in estados_validos:
+            continue
+        if pd.isna(f["fecha_alerta"]):
+            continue
+        if pd.isna(f["fecha_envio"]):
+            continue
+        if pd.isna(f["fecha_vencimiento"]):
+            continue
+
+        msg = str(f["mensaje"]).strip() if not pd.isna(f["mensaje"]) else ""
+        if msg == "" or msg.upper() in ["N/A", "NONE", "NAN"]:
+            continue
+
+        f["id_alerta"]   = int(f["id_alerta"])
+        f["id_usuario"]  = int(f["id_usuario"])
+        f["id_registro"] = int(f["id_registro"])
+        f["mensaje"]     = msg
+        filas.append(f)
+
+    resultado = pd.DataFrame(filas).reset_index(drop=True) if filas else df.iloc[0:0]
+    print(f"\nResumen alertas: {antes} originales -> {antes - len(resultado)} eliminados -> {len(resultado)} validos\n")
+    return resultado
