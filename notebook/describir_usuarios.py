@@ -17,8 +17,10 @@ def describir_usuarios(df: pd.DataFrame) -> None:
         print(f"  {int(fila['id_usuario']):>12}  {nombre_completo:<25}  {fila['tipo_sangre']:<12}  {fila['fecha_nacimiento']:<12}")
 
     print(f"\n--- Período de registro ---")
-    print(f"  Primer registro : {df['fecha_registro'].min()}")
-    print(f"  Último registro : {df['fecha_registro'].max()}")
+    fecha_min = str(df['fecha_registro'].min()).replace(' 00:00:00','')
+    print(f"  Primer registro : {fecha_min if pd.notna(fecha_min) else '(sin dato)'}")
+    fecha_max = str(df['fecha_registro'].max()).replace(' 00:00:00','')
+    print(f"  Último registro : {fecha_max if pd.notna(fecha_max) else '(sin dato)'}")
 
     nulos = df.isnull().sum()
     nulos = nulos[nulos > 0]

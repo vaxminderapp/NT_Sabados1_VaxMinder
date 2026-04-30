@@ -6,7 +6,11 @@ def describir_registro_vacunacion(df: pd.DataFrame) -> None:
     print("\n========== DESCRIPCIÓN: REGISTRO DE VACUNACIÓN ==========")
     print(f"Total de vacunaciones registradas: {df.shape[0]}")
 
-    # Cargar catálogo para cruzar nombres de vacunas
+    if df.empty:
+        print("  (no hay registros válidos para describir)")
+        return
+
+    # Cargar catálogo para cruzar nombres
     catalogo = pd.DataFrame(simular_vacunas_catalogo())[['id_vacuna', 'nombre_vacuna']]
     df_enriquecido = df.merge(catalogo, left_on='idVacuna', right_on='id_vacuna', how='left')
 
@@ -19,8 +23,7 @@ def describir_registro_vacunacion(df: pd.DataFrame) -> None:
         print(f"  {int(fila['idRegistro']):>4}  {int(fila['idUsuario']):>12}  {nombre_vacuna:<22}  {int(fila['numeroDosis']):<6}  {str(fila['fechaAplicacion']):<18}  {proxima}")
 
     print(f"\n--- Vacunas más aplicadas ---")
-    conteo = df_enriquecido.groupby('nombre_vacuna').size().sort_values(ascending=False)
-    for vacuna, cantidad in conteo.items():
+    for vacuna, cantidad in df_enriquecido.groupby('nombre_vacuna').size().sort_values(ascending=False).items():
         print(f"  {vacuna:<22}: {cantidad} aplicación(es)")
 
     print(f"\n--- Distribución por número de dosis ---")

@@ -2,44 +2,43 @@ import pandas as pd
 
 
 def limpiar_registro_vacunacion(datos):
-    if isinstance(datos, list):
-        df = pd.DataFrame(datos)
-    else:
-        df = datos.copy()
+    df = pd.DataFrame(datos) if isinstance(datos, list) else datos.copy()
 
-    print("Valores nulos:")
+    print("Nulos detectados:")
     for col in df.columns:
-        nulos = df[col].isna().sum()
-        if nulos > 0:
-            print(f"  {col}: {nulos}")
+        n = df[col].isna().sum()
+        if n > 0:
+            print(f"  {col}: {n}")
 
     antes = len(df)
-    df = df.drop_duplicates(subset=['idRegistro'], keep='first')
-    print(f"Duplicados: {antes - len(df)}\n")
+    df = df.drop_duplicates(subset=["idRegistro"], keep="first")
 
-    validos = []
-    for _, fila in df.iterrows():
-        if pd.isna(fila['idRegistro']) or fila['idRegistro'] <= 0:
+    filas = []
+    for _, f in df.iterrows():
+        f = f.copy()
+        if pd.isna(f["idRegistro"]) or int(f["idRegistro"]) <= 0:
             continue
-        if pd.isna(fila['idUsuario']) or fila['idUsuario'] <= 0:
+        if pd.isna(f["idUsuario"]) or int(f["idUsuario"]) <= 0:
             continue
-        if pd.isna(fila['fechaAplicacion']):
+        if pd.isna(f["fechaAplicacion"]):
             continue
-        numero_dosis = fila['numeroDosis']
-        if pd.isna(numero_dosis) or int(numero_dosis) <= 0 or int(numero_dosis) > 10:
+        dosis = f["numeroDosis"]
+        if pd.isna(dosis) or int(dosis) <= 0 or int(dosis) > 10:
             continue
-        lote = str(fila['loteVacuna']).strip() if not pd.isna(fila['loteVacuna']) else ''
-        if not lote or len(lote) < 3:
+        lote = str(f["loteVacuna"]).strip() if not pd.isna(f["loteVacuna"]) else ""
+        if len(lote) < 3 or lote.lower() in ["none", "nan"]:
             continue
-        if pd.isna(fila['idCentroMedico']) or fila['idCentroMedico'] <= 0:
+        if pd.isna(f["idCentroMedico"]) or int(f["idCentroMedico"]) <= 0:
             continue
-        validos.append(fila)
+        f["idRegistro"]    = int(f["idRegistro"])
+        f["idUsuario"]     = int(f["idUsuario"])
+        f["idCentroMedico"] = int(f["idCentroMedico"])
+        f["numeroDosis"]   = int(f["numeroDosis"])
+        if pd.isna(f["observaciones"]) or str(f["observaciones"]).strip() == "":
+            f["observaciones"] = None
+        filas.append(f)
 
-    print(f"--- Resumen limpieza registro vacunacion ---")
-    print(f"Registros originales:  {antes}")
-    print(f"Registros eliminados:  {antes - len(validos)}")
-    print(f"Registros válidos:     {len(validos)}\n")
+    resultado = pd.DataFrame(filas).reset_index(drop=True) if filas else df.iloc[0:0]
+    print(f"\nResumen registro vacunacion: {antes} originales -> {antes - len(resultado)} eliminados -> {len(resultado)} validos\n")
+    return resultado
 
-    if not validos:
-        return df.iloc[0:0].reset_index(drop=True)
-    return pd.DataFrame(validos).reset_index(drop=True)

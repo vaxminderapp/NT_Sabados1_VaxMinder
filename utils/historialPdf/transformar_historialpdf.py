@@ -3,21 +3,21 @@ from utils.historialPdf.simular_historial import simularHistorialPdf
 
 
 def transformar_historial(historial):
-    historialTransformado = []
-    for registro in historial:
-        item = registro.copy()
-        probabilidadError = random.random()
-        if probabilidadError < 0.15:
-            item['idHistorial'] = random.choice([None,0,-1])
-            item['idUsuario'] = random.choice([None,0,-5])
-        elif probabilidadError < 0.35:
-            item['fechaGeneracion'] = None
-        elif probabilidadError < 0.55:
-            item['nombreArchivo'] = random.choice(['',None,'archivo.txt'])
-        elif probabilidadError < 0.75:
-            item['rutaArchivo'] = random.choice(['',None,'/ruta/invalida'])
+    transformado = []
+    for item in historial:
+        r = item.copy()
+        if random.random() > 0.40:
+            transformado.append(r)
+            continue
+        p = random.random()
+        if p < 0.25:
+            r["idHistorial"] = random.choice([None, 0, -1])
+            r["idUsuario"]   = random.choice([None, 0, -5])
+        elif p < 0.50:
+            r["fechaGeneracion"] = None
+        elif p < 0.75:
+            r["nombreArchivo"] = random.choice(["", None, "archivo.txt"])
         else:
-            item['nombreArchivo'] = 'duplicado.pdf'
-            item['rutaArchivo'] = '/storage/pdfs/usuarios/0/duplicado.pdf'
-        historialTransformado.append(item)
-    return historialTransformado
+            r["rutaArchivo"] = random.choice(["", None, "/ruta/invalida"])
+        transformado.append(r)
+    return transformado

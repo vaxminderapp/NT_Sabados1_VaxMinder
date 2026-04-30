@@ -1,59 +1,44 @@
 import pandas as pd
 
 
-def limpiar_centros_medicos(centros):
-    if isinstance(centros, list):
-        df = pd.DataFrame(centros)
-    else:
-        df = centros.copy()
-    
-    print("Valores nulos:")
-    for col in df.columns:
-        nulos = df[col].isna().sum()
-        if nulos > 0:
-            print(f"  {col}: {nulos}")
-    
-    antes = len(df)
-    df = df.drop_duplicates(subset=['id_centro'], keep='first')
-    print(f"Duplicados: {antes - len(df)}\n")
-    
-    validos = []
-    for _, fila in df.iterrows():
-        if pd.isna(fila['id_centro']) or fila['id_centro'] <= 0:
-            continue
-        
-        nombre = str(fila['nombre_centro']).strip()
-        if nombre == "" or nombre == "None":
-            continue
-        
-        fila['nombre_centro'] = nombre
-        
-        if pd.notna(fila['ciudad']):
-            fila['ciudad'] = str(fila['ciudad']).strip().title()
-        
-        if pd.notna(fila['direccion']):
-            fila['direccion'] = str(fila['direccion']).strip()
-        
-        telefono = str(fila['telefono']).strip()
-        digitos = ""
-        for c in telefono:
-            if c.isdigit():
-                digitos += c
-        
-        if len(digitos) < 7:
-            continue
-        
-        if fila['tipo_centro'] not in ["Hospital", "Clínica", "Centro de salud"]:
-            continue
-        
-        validos.append(fila)
-    
-    print(f"--- Resumen limpieza centros médicos ---")
-    print(f"Registros originales:  {antes}")
-    print(f"Registros eliminados:  {antes - len(validos)}")
-    print(f"Registros válidos:     {len(validos)}\n")
+def limpiar_centros_medicos(datos):
+    df = pd.DataFrame(datos) if isinstance(datos, list) else datos.copy()
 
-    if not validos:
-        return df.iloc[0:0].reset_index(drop=True)
-    df_limpio = pd.DataFrame(validos).reset_index(drop=True)
-    return df_limpio
+    print("Nulos detectados:")
+    for col in df.columns:
+        n = df[col].isna().sum()
+        if n > 0:
+            print(f"  {col}: {n}")
+
+    antes = len(df)
+    df = df.drop_duplicates(subset=["id_centro"], keep="first")
+
+    filas = []
+    for _, f in df.iterrows():
+        f = f.copy()
+        if pd.isna(f["id_centro"]) or int(f["id_centro"]) <= 0:
+            continue
+        nombre = str(f["nombre_centro"]).strip() if not pd.isna(f["nombre_centro"]) else ""
+        if nombre == "" or nombre.lower() in ["none", "nan"]:
+            continue
+        if f["tipo_centro"] not in ["Hospital", "Clínica", "Centro de salud"]:
+            continue
+        tel = str(f["telefono"]).strip() if not pd.isna(f["telefono"]) else ""
+        if len("".join(c for c in tel if c.isdigit())) < 7:
+            continue
+        # ciudad y direccion son obligatorios
+        ciudad = str(f["ciudad"]).strip() if not pd.isna(f["ciudad"]) else ""
+        if ciudad == "" or ciudad.lower() in ["none", "nan"]:
+            continue
+        direccion = str(f["direccion"]).strip() if not pd.isna(f["direccion"]) else ""
+        if direccion == "" or direccion.lower() in ["none", "nan"]:
+            continue
+        f["nombre_centro"] = nombre
+        f["ciudad"]        = ciudad.title()
+        f["direccion"]     = direccion
+        f["id_centro"]     = int(f["id_centro"])
+        filas.append(f)
+
+    resultado = pd.DataFrame(filas).reset_index(drop=True) if filas else df.iloc[0:0]
+    print(f"\nResumen centros: {antes} originales -> {antes - len(resultado)} eliminados -> {len(resultado)} validos\n")
+    return resultado

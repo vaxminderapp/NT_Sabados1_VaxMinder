@@ -1,72 +1,54 @@
 import pandas as pd
 
 
-def limpiar_usuarios(usuarios):
-    if isinstance(usuarios, list):
-        df = pd.DataFrame(usuarios)
-    else:
-        df = usuarios.copy()
-    
-    print("Valores nulos:")
+def limpiar_usuarios(datos):
+    df = pd.DataFrame(datos) if isinstance(datos, list) else datos.copy()
+
+    print("Nulos detectados:")
     for col in df.columns:
-        nulos = df[col].isna().sum()
-        if nulos > 0:
-            print(f"  {col}: {nulos}")
-    
+        n = df[col].isna().sum()
+        if n > 0:
+            print(f"  {col}: {n}")
+
     antes = len(df)
-    df = df.drop_duplicates(subset=['id_usuario'], keep='first')
-    print(f"Duplicados: {antes - len(df)}\n")
-    
-    validos = []
-    for _, fila in df.iterrows():
-        if pd.isna(fila['id_usuario']) or fila['id_usuario'] <= 0:
+    df = df.drop_duplicates(subset=["id_usuario"], keep="first")
+
+    tipos_sangre = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]
+
+    filas = []
+    for _, f in df.iterrows():
+        f = f.copy()
+        if pd.isna(f["id_usuario"]) or int(f["id_usuario"]) <= 0:
             continue
-        
-        nombre = str(fila['nombre']).strip()
-        if nombre == "" or nombre == "None":
+        nombre = str(f["nombre"]).strip() if not pd.isna(f["nombre"]) else ""
+        if nombre == "" or nombre.lower() in ["none", "nan"]:
             continue
-        
-        apellido = str(fila['apellido']).strip()
-        if apellido == "" or apellido == "None":
+        apellido = str(f["apellido"]).strip() if not pd.isna(f["apellido"]) else ""
+        if apellido == "" or apellido.lower() in ["none", "nan"]:
             continue
-        
-        fila['nombre'] = nombre
-        fila['apellido'] = apellido
-        
-        email = str(fila['email']).strip()
-        if "@" not in email or "." not in email:
+        email = str(f["email"]).strip() if not pd.isna(f["email"]) else ""
+        partes = email.split("@")
+        if len(partes) != 2 or partes[0] == "" or "." not in partes[1]:
             continue
-        
-        contraseña = str(fila['contraseña']).strip()
-        if contraseña == "" or contraseña == "None":
+        clave = str(f["contraseña"]).strip() if not pd.isna(f["contraseña"]) else ""
+        if clave == "" or clave.lower() in ["none", "nan"]:
             continue
-        
-        if pd.isna(fila['fecha_nacimiento']):
+        if pd.isna(f["fecha_nacimiento"]) or pd.isna(f["fecha_registro"]):
             continue
-        
-        if pd.isna(fila['fecha_registro']):
+        if f["tipo_sangre"] not in tipos_sangre:
             continue
-        
-        if fila['tipo_sangre'] not in ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"]:
+        tel = str(f["telefono"]).strip() if not pd.isna(f["telefono"]) else ""
+        if any(c.isalpha() for c in tel):
             continue
-        
-        telefono = str(fila['telefono']).strip()
-        digitos = ""
-        for c in telefono:
-            if c.isdigit():
-                digitos += c
-        
+        digitos = "".join(c for c in tel if c.isdigit())
         if len(digitos) < 7 or len(digitos) > 12:
             continue
-        
-        validos.append(fila)
-    
-    print(f"--- Resumen limpieza usuarios ---")
-    print(f"Registros originales:  {antes}")
-    print(f"Registros eliminados:  {antes - len(validos)}")
-    print(f"Registros válidos:     {len(validos)}\n")
+        f["nombre"]   = nombre
+        f["apellido"] = apellido
+        f["email"]    = email
+        f["id_usuario"] = int(f["id_usuario"])
+        filas.append(f)
 
-    if not validos:
-        return df.iloc[0:0].reset_index(drop=True)
-    df_limpio = pd.DataFrame(validos).reset_index(drop=True)
-    return df_limpio
+    resultado = pd.DataFrame(filas).reset_index(drop=True) if filas else df.iloc[0:0]
+    print(f"\nResumen usuarios: {antes} originales -> {antes - len(resultado)} eliminados -> {len(resultado)} validos\n")
+    return resultado
