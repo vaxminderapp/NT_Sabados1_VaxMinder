@@ -13,27 +13,28 @@ def transformar_usuarios(usuarios):
 
         # Inyectando errores controlados
         probabilidadError = random.random()
-        if probabilidadError < 0.1:
+        if probabilidadError < 0.08:
             # ID y nombre inválidos
             usuario_transformado["id_usuario"] = random.choice([None, -1, 0])
             usuario_transformado["nombre"] = random.choice(["", None, "   "])
-        elif probabilidadError < 0.25:
+        elif probabilidadError < 0.18:
             # Fechas nulas
             usuario_transformado["fecha_nacimiento"] = None
             usuario_transformado["fecha_registro"] = None
-        elif probabilidadError < 0.4:
+        elif probabilidadError < 0.30:
             # Email con formato inválido
             usuario_transformado["email"] = random.choice(["correo_sin_arroba", "@sinusuario.com", "", None])
-        elif probabilidadError < 0.6:
+        elif probabilidadError < 0.45:
             # Tipo de sangre inválido
             usuario_transformado["tipo_sangre"] = random.choice(["Z+", "XX", "", None, "desconocido"])
-        elif probabilidadError < 0.8:
+        elif probabilidadError < 0.60:
             # Teléfono con longitud incorrecta
             usuario_transformado["telefono"] = random.choice(["123", "abc1234567", "", None])
-        else:
+        elif probabilidadError < 0.75:
             # Apellido y contraseña vacíos
             usuario_transformado["apellido"] = random.choice(["", None, "   "])
             usuario_transformado["contraseña"] = random.choice(["", None])
+        # Si no hay error, se conserva el registro original
 
         usuarios_transformados.append(usuario_transformado)
 

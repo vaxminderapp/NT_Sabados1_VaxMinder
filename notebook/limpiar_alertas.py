@@ -32,11 +32,28 @@ def limpiar_alertas(alertas):
         if pd.isna(fila['fecha_alerta']):
             continue
         
+        # Si estado es pendiente, fecha_envio debe ser nula; de lo contrario debe tener valor
         if fila['estado'] == 'pendiente':
-            fila['fecha_envio'] = None
+            if pd.isna(fila['fecha_envio']):
+                # Es válido: alerta pendiente sin fecha de envío
+                pass
+            else:
+                # Alerta pendiente pero con fecha de envío es inconsistente, rechazar
+                continue
+        else:
+            # Estado no es pendiente, debe tener fecha_envio válida
+            if pd.isna(fila['fecha_envio']):
+                continue
         
-        validas.append(fila)
+        # Convertir fila a diccionario para evitar problemas con Series
+        registro = fila.to_dict()
+        validas.append(registro)
     
+<<<<<<< HEAD
+=======
+<<<<<<< Updated upstream
+=======
+>>>>>>> 41b6f2d (fix Cambios en main)
     print(f"--- Resumen limpieza alertas ---")
     print(f"Registros originales:  {antes}")
     print(f"Registros eliminados:  {antes - len(validas)}")
@@ -44,5 +61,14 @@ def limpiar_alertas(alertas):
 
     if not validas:
         return df.iloc[0:0].reset_index(drop=True)
+<<<<<<< HEAD
+=======
+    
+>>>>>>> Stashed changes
+>>>>>>> 41b6f2d (fix Cambios en main)
     df_limpio = pd.DataFrame(validas).reset_index(drop=True)
+    
+    # Eliminar cualquier fila que contenga NaN
+    df_limpio = df_limpio.dropna()
+    
     return df_limpio

@@ -42,4 +42,18 @@ def limpiar_registro_vacunacion(datos):
 
     if not validos:
         return df.iloc[0:0].reset_index(drop=True)
+<<<<<<< HEAD
     return pd.DataFrame(validos).reset_index(drop=True)
+=======
+<<<<<<< Updated upstream
+    return pd.DataFrame(validos).reset_index(drop=True)
+=======
+    
+    df_limpio = pd.DataFrame(validos).reset_index(drop=True)
+    
+    # Eliminar cualquier fila que contenga NaN
+    df_limpio = df_limpio.dropna()
+    
+    return df_limpio
+>>>>>>> Stashed changes
+>>>>>>> 41b6f2d (fix Cambios en main)
