@@ -20,6 +20,16 @@ def describir_usuarios(df: pd.DataFrame) -> None:
     print(f"  Primer registro : {df['fecha_registro'].min()}")
     print(f"  Último registro : {df['fecha_registro'].max()}")
 
+    stats = df[['id_usuario']].describe()
+    stats['id_usuario'] = stats['id_usuario'].apply(lambda x: f"{int(x)}" if pd.notna(x) else "-")
+    print(f"\nEstadísticas numéricas:\n{stats}")
+
+    print(f"\nDistribución por tipo de sangre:\n{df['tipo_sangre'].value_counts().sort_index()}")
+    print(f"\nFecha mínima de nacimiento: {df['fecha_nacimiento'].min()}")
+    print(f"Fecha máxima de nacimiento: {df['fecha_nacimiento'].max()}")
+    print(f"\nFecha mínima de registro: {df['fecha_registro'].min()}")
+    print(f"Fecha máxima de registro: {df['fecha_registro'].max()}")
+    print(f"\nValores nulos por columna:\n{df.isnull().sum().to_string()}")
     nulos = df.isnull().sum()
     nulos = nulos[nulos > 0]
     if not nulos.empty:
@@ -28,3 +38,4 @@ def describir_usuarios(df: pd.DataFrame) -> None:
             print(f"  {campo}: {cantidad} registros sin dato")
     else:
         print("\n  Sin campos con datos faltantes.")
+
